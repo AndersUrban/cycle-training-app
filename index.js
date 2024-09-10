@@ -1,6 +1,7 @@
 const express = require('express');
-const axios = require('axios');  // Tilføj denne linje
-const path = require('path');  // Importer 'path' til filhåndtering
+const path = require('path');
+const axios = require('axios');  // Importer axios til at lave API-kald
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -9,27 +10,30 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Standardrute til at vise dashboardet
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));  // Opdateret til 'dashboard.html'
+    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
-// Start serveren
-app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
-});
-const axios = require('axios');
-
-// Eksempel på at bruge axios til at hente data fra Strava API
+// Rute til at hente Strava-data
 app.get('/strava/recent-workouts', async (req, res) => {
     try {
-        const accessToken = 'YOUR_STRAVA_ACCESS_TOKEN';  // Udskift med din Strava token
+        const accessToken = 'YOUR_STRAVA_ACCESS_TOKEN';  // Udskift med din Strava Access Token
+
+        // Lav forespørgsel til Strava API for at hente brugerens aktiviteter
         const response = await axios.get('https://www.strava.com/api/v3/athlete/activities', {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
         });
-        res.json(response.data);  // Returner data til frontend
+
+        // Send Strava-data tilbage som JSON
+        res.json(response.data);
     } catch (error) {
-        console.error(error);
+        console.error('Error fetching Strava data:', error);
         res.status(500).send('Error fetching Strava data');
     }
+});
+
+// Start serveren og lyt på den angivne port
+app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
 });
