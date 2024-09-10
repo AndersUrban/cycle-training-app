@@ -1,0 +1,2 @@
+# Ignorer .env-filen, så den ikke kommer med i versionkontrol
+.env
